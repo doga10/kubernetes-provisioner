@@ -1,0 +1,30 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: devops-letsencrypt
+  namespace: devops
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: gestao@clubedaposta.com
+    privateKeySecretRef:
+      name: devops-letsencrypt
+    solvers:
+    - selector: {}
+      http01:
+        ingress:
+          class: nginx
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: devops-acme-tls
+  namespace: devops
+spec:
+  secretName: devops-acme-tls
+  dnsNames:
+  - myhost.com
+  issuerRef:
+    name: devops-letsencrypt
+    kind: ClusterIssuer
+    group: cert-manager.io
